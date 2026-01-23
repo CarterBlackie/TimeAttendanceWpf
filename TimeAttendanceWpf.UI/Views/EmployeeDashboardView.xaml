@@ -1,0 +1,23 @@
+<UserControl x:Class="TimeAttendanceWpf.UI.Views.EmployeeDashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="{Binding Title}"
+                   FontSize="22"
+                   Margin="0,0,0,12"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
+            <Button Content="Clock In" Command="{Binding ClockInCommand}" Height="34" Width="120" Margin="0,0,10,0"/>
+            <Button Content="Clock Out" Command="{Binding ClockOutCommand}" Height="34" Width="120" Margin="0,0,10,0"/>
+            <Button Content="Back" Command="{Binding BackCommand}" Height="34" Width="120"/>
+        </StackPanel>
+
+        <ListBox Grid.Row="2" ItemsSource="{Binding PunchLines}" />
+    </Grid>
+</UserControl>
