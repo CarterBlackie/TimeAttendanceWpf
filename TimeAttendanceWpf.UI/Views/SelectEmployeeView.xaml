@@ -1,0 +1,15 @@
+<UserControl x:Class="TimeAttendanceWpf.UI.Views.SelectEmployeeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="24">
+        <StackPanel Width="360">
+            <TextBlock Text="Select User" FontSize="22" Margin="0,0,0,12"/>
+            <ComboBox ItemsSource="{Binding Employees}"
+                      SelectedItem="{Binding SelectedEmployee}"
+                      Height="32"/>
+            <Button Content="Continue"
+                    Height="36"
+                    Margin="0,12,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
