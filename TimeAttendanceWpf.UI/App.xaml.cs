@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using TimeAttendanceWpf.Application;
 using TimeAttendanceWpf.UI.Services;
 using TimeAttendanceWpf.UI.ViewModels;
 
@@ -8,21 +10,45 @@ public partial class App : System.Windows.Application
 {
     protected override void OnStartup(StartupEventArgs e)
     {
-        base.OnStartup(e);
-
-        var navigationStore = new NavigationStore();
-
-        navigationStore.CurrentViewModel =
-            new SelectEmployeeViewModel();
-
-        var mainViewModel =
-            new MainViewModel(navigationStore);
-
-        var mainWindow = new MainWindow
+        try
         {
-            DataContext = mainViewModel
-        };
+            base.OnStartup(e);
 
-        mainWindow.Show();
+            // If something throws later on the UI thread, show it.
+            DispatcherUnhandledException += (_, args) =>
+            {
+                MessageBox.Show(args.Exception.ToString(), "Unhandled UI Exception");
+                args.Handled = true;
+                Shutdown(-1);
+            };
+
+            var navigationStore = new NavigationStore();
+            var sessionStore = new SessionStore();
+
+            var punchRepo = new InMemoryTimePunchRepository();
+            var timeClockService = new TimeClockService(punchRepo);
+
+            Resources["TimeClockService"] = timeClockService;
+
+            navigationStore.CurrentViewModel =
+                new SelectEmployeeViewModel(navigationStore, sessionStore);
+
+            var mainViewModel = new MainViewModel(navigationStore);
+
+            var window = new MainWindow
+            {
+                DataContext = mainViewModel
+            };
+
+            MainWindow = window;
+            ShutdownMode = ShutdownMode.OnMainWindowClose;
+
+            window.Show();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.ToString(), "Startup Failed");
+            Shutdown(-1);
+        }
     }
 }
