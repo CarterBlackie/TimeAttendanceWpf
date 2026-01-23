@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="TimeAttendanceWpf.Application/TimeAttendanceWpf.Application.csproj" />
+  <Project Path="TimeAttendanceWpf.Domain/TimeAttendanceWpf.Domain.csproj" />
+  <Project Path="TimeAttendanceWpf.Tests/TimeAttendanceWpf.Tests.csproj" />
+  <Project Path="TimeAttendanceWpf.UI/TimeAttendanceWpf.UI.csproj" />
+</Solution>
