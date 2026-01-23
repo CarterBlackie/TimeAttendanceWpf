@@ -8,8 +8,19 @@
         Width="800">
 
     <Window.Resources>
+        <!-- Select Employee -->
         <DataTemplate DataType="{x:Type vm:SelectEmployeeViewModel}">
             <views:SelectEmployeeView />
+        </DataTemplate>
+
+        <!-- Employee Dashboard -->
+        <DataTemplate DataType="{x:Type vm:EmployeeDashboardViewModel}">
+            <views:EmployeeDashboardView />
+        </DataTemplate>
+
+        <!-- Manager Dashboard -->
+        <DataTemplate DataType="{x:Type vm:ManagerDashboardViewModel}">
+            <views:ManagerDashboardView />
         </DataTemplate>
     </Window.Resources>
 
