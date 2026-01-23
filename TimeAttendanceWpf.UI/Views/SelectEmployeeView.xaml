@@ -3,13 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid Margin="24">
         <StackPanel Width="360">
-            <TextBlock Text="Select User" FontSize="22" Margin="0,0,0,12"/>
-            <ComboBox ItemsSource="{Binding Employees}"
-                      SelectedItem="{Binding SelectedEmployee}"
+            <TextBlock Text="Select User"
+                       FontSize="22"
+                       Margin="0,0,0,12" />
+
+            <ComboBox ItemsSource="{Binding EmployeeNames}"
+                      SelectedIndex="{Binding SelectedIndex}"
                       Height="32"/>
+
             <Button Content="Continue"
+                    Command="{Binding ContinueCommand}"
                     Height="36"
-                    Margin="0,12,0,0"/>
+                    Margin="0,12,0,0" />
         </StackPanel>
     </Grid>
 </UserControl>
