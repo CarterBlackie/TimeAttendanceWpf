@@ -19,7 +19,8 @@ The focus of this project is business logic, architecture, and correctness rathe
 - Manager dashboard placeholder
 - MVVM architecture
 - View navigation without code-behind logic
-- In-memory data storage for rapid development
+- Display real punch history per employee
+- Enable and disable Clock In / Clock Out based on current state
 
 ---
 
@@ -61,8 +62,6 @@ This separation keeps the core logic testable and independent of the UI.
 ## Planned Features
 The following features are planned for future iterations:
 
-- Display real punch history per employee
-- Enable and disable Clock In / Clock Out based on current state
 - Weekly timesheets
 - Overtime calculation (40+ hours per week)
 - Time rounding rules (e.g., nearest 15 minutes)
