@@ -20,12 +20,16 @@ public sealed class EmployeeDashboardViewModel : ViewModelBase
     public RelayCommand ClockOutCommand { get; }
     public RelayCommand BackCommand { get; }
 
-    public EmployeeDashboardViewModel(NavigationStore navigationStore, SessionStore sessionStore)
+    public EmployeeDashboardViewModel(
+        NavigationStore navigationStore,
+        SessionStore sessionStore)
     {
         _navigationStore = navigationStore;
         _sessionStore = sessionStore;
 
-        _timeClockService = (TimeClockService)System.Windows.Application.Current.Resources["TimeClockService"];
+        _timeClockService =
+            (TimeClockService)System.Windows.Application.Current
+                .Resources["TimeClockService"];
 
         ClockInCommand = new RelayCommand(ClockIn);
         ClockOutCommand = new RelayCommand(ClockOut);
@@ -67,17 +71,33 @@ public sealed class EmployeeDashboardViewModel : ViewModelBase
         PunchLines.Clear();
 
         var emp = _sessionStore.CurrentEmployee;
-        if (emp is null) return;
+        if (emp is null)
+            return;
 
-        PunchLines.Add("Try Clock In, then Clock Out.");
-        PunchLines.Add("Next step: show real punch list from repository.");
+        var punches = _timeClockService.GetTodayPunches(emp.Id);
+
+        if (punches.Count == 0)
+        {
+            PunchLines.Add("No punches today.");
+            return;
+        }
+
+        foreach (var punch in punches)
+        {
+            PunchLines.Add(
+                $"{punch.Timestamp:t} - {punch.Type}");
+        }
     }
 
     private Employee RequireEmployee()
-        => _sessionStore.CurrentEmployee ?? throw new InvalidOperationException("No employee selected.");
+    {
+        return _sessionStore.CurrentEmployee
+            ?? throw new InvalidOperationException("No employee selected.");
+    }
 
     private void Back()
     {
-        _navigationStore.CurrentViewModel = new SelectEmployeeViewModel(_navigationStore, _sessionStore);
+        _navigationStore.CurrentViewModel =
+            new SelectEmployeeViewModel(_navigationStore, _sessionStore);
     }
 }

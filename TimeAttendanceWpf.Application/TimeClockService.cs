@@ -35,4 +35,10 @@ public sealed class TimeClockService
 
         _repository.Add(new TimePunch(employeeId, now, PunchType.Out));
     }
+
+    public IReadOnlyList<TimePunch> GetTodayPunches(Guid employeeId)
+    {
+        return _repository.GetForDay(employeeId, DateTime.Now);
+    }
+
 }
