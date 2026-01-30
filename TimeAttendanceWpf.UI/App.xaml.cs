@@ -34,7 +34,11 @@ public partial class App : System.Windows.Application
             ITimePunchRepository punchRepo = new SqliteTimePunchRepository(dbPath);
             var timeClockService = new TimeClockService(punchRepo);
 
+            var timesheetRepo = new SqliteTimesheetRepository(dbPath);
+            var timesheetService = new TimesheetService(punchRepo, timesheetRepo);
+
             Resources["TimeClockService"] = timeClockService;
+            Resources["TimesheetService"] = timesheetService;
 
             navigationStore.CurrentViewModel =
                 new SelectEmployeeViewModel(navigationStore, sessionStore);
