@@ -21,6 +21,11 @@ The focus of this project is business logic, architecture, and correctness rathe
 - View navigation without code-behind logic
 - Display real punch history per employee
 - Enable and disable Clock In / Clock Out based on current state
+- Weekly timesheets
+- Overtime calculation (40+ hours per week)
+- Time rounding rules (e.g., nearest 15 minutes)
+- Manager approval workflow for timesheets
+- Persistent storage using SQLite
 
 ---
 
@@ -62,11 +67,6 @@ This separation keeps the core logic testable and independent of the UI.
 ## Planned Features
 The following features are planned for future iterations:
 
-- Weekly timesheets
-- Overtime calculation (40+ hours per week)
-- Time rounding rules (e.g., nearest 15 minutes)
-- Manager approval workflow for timesheets
-- Persistent storage using SQLite
 - Unit tests covering time-tracking edge cases
 - Improved UI layout and styling
 
