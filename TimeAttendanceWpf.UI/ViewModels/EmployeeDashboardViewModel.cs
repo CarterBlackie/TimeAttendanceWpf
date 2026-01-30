@@ -16,6 +16,17 @@ public sealed class EmployeeDashboardViewModel : ViewModelBase
 
     public ObservableCollection<string> PunchLines { get; } = new();
 
+    private bool _isClockedIn;
+    public bool IsClockedIn
+    {
+        get => _isClockedIn;
+        private set
+        {
+            _isClockedIn = value;
+            OnPropertyChanged();
+        }
+    }
+
     public RelayCommand ClockInCommand { get; }
     public RelayCommand ClockOutCommand { get; }
     public RelayCommand BackCommand { get; }
@@ -28,15 +39,17 @@ public sealed class EmployeeDashboardViewModel : ViewModelBase
         _sessionStore = sessionStore;
 
         _timeClockService =
-            (TimeClockService)System.Windows.Application.Current
-                .Resources["TimeClockService"];
+            (TimeClockService)System.Windows.Application.Current.Resources["TimeClockService"];
 
-        ClockInCommand = new RelayCommand(ClockIn);
-        ClockOutCommand = new RelayCommand(ClockOut);
+        ClockInCommand = new RelayCommand(ClockIn, CanClockIn);
+        ClockOutCommand = new RelayCommand(ClockOut, CanClockOut);
         BackCommand = new RelayCommand(Back);
 
-        RefreshPunches();
+        RefreshPunchesAndState();
     }
+
+    private bool CanClockIn() => _sessionStore.CurrentEmployee != null && !IsClockedIn;
+    private bool CanClockOut() => _sessionStore.CurrentEmployee != null && IsClockedIn;
 
     private void ClockIn()
     {
@@ -44,7 +57,7 @@ public sealed class EmployeeDashboardViewModel : ViewModelBase
         {
             var emp = RequireEmployee();
             _timeClockService.ClockIn(emp.Id, DateTime.Now);
-            RefreshPunches();
+            RefreshPunchesAndState();
         }
         catch (Exception ex)
         {
@@ -58,7 +71,7 @@ public sealed class EmployeeDashboardViewModel : ViewModelBase
         {
             var emp = RequireEmployee();
             _timeClockService.ClockOut(emp.Id, DateTime.Now);
-            RefreshPunches();
+            RefreshPunchesAndState();
         }
         catch (Exception ex)
         {
@@ -66,34 +79,40 @@ public sealed class EmployeeDashboardViewModel : ViewModelBase
         }
     }
 
-    private void RefreshPunches()
+    private void RefreshPunchesAndState()
     {
         PunchLines.Clear();
 
         var emp = _sessionStore.CurrentEmployee;
         if (emp is null)
+        {
+            IsClockedIn = false;
+            ClockInCommand.RaiseCanExecuteChanged();
+            ClockOutCommand.RaiseCanExecuteChanged();
             return;
+        }
 
         var punches = _timeClockService.GetTodayPunches(emp.Id);
 
         if (punches.Count == 0)
         {
+            IsClockedIn = false;
             PunchLines.Add("No punches today.");
-            return;
+        }
+        else
+        {
+            foreach (var punch in punches)
+                PunchLines.Add($"{punch.Timestamp:t} - {punch.Type}");
+
+            IsClockedIn = punches.Last().Type == PunchType.In;
         }
 
-        foreach (var punch in punches)
-        {
-            PunchLines.Add(
-                $"{punch.Timestamp:t} - {punch.Type}");
-        }
+        ClockInCommand.RaiseCanExecuteChanged();
+        ClockOutCommand.RaiseCanExecuteChanged();
     }
 
     private Employee RequireEmployee()
-    {
-        return _sessionStore.CurrentEmployee
-            ?? throw new InvalidOperationException("No employee selected.");
-    }
+        => _sessionStore.CurrentEmployee ?? throw new InvalidOperationException("No employee selected.");
 
     private void Back()
     {

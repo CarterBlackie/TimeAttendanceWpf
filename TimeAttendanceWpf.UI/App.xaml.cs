@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 using TimeAttendanceWpf.Application;
 using TimeAttendanceWpf.UI.Services;
@@ -14,7 +15,6 @@ public partial class App : System.Windows.Application
         {
             base.OnStartup(e);
 
-            // If something throws later on the UI thread, show it.
             DispatcherUnhandledException += (_, args) =>
             {
                 MessageBox.Show(args.Exception.ToString(), "Unhandled UI Exception");
@@ -25,7 +25,13 @@ public partial class App : System.Windows.Application
             var navigationStore = new NavigationStore();
             var sessionStore = new SessionStore();
 
-            var punchRepo = new InMemoryTimePunchRepository();
+            // SQLite DB path (persists across restarts)
+            var dbPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "TimeAttendanceWpf",
+                "timeattendance.db");
+
+            ITimePunchRepository punchRepo = new SqliteTimePunchRepository(dbPath);
             var timeClockService = new TimeClockService(punchRepo);
 
             Resources["TimeClockService"] = timeClockService;
