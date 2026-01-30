@@ -136,4 +136,48 @@ public sealed class TimeClockServiceTests
             if (File.Exists(dbPath)) File.Delete(dbPath);
         }
     }
+
+    [Fact]
+    public void TimesheetCalculator_Builds_Weekly_Shifts()
+    {
+        var punches = new List<TimePunch>
+        {
+            new(Guid.NewGuid(), new DateTime(2026, 1, 27, 9, 0, 0), PunchType.In),
+            new(Guid.NewGuid(), new DateTime(2026, 1, 27, 17, 0, 0), PunchType.Out),
+        };
+
+        var calc = new TimesheetCalculator();
+        var shifts = calc.BuildShifts(punches, 15);
+
+        Assert.Single(shifts);
+        Assert.Equal(8, shifts[0].Hours);
+    }
+
+    [Fact]
+    public void TimesheetCalculator_Calculates_Weekly_Overtime()
+    {
+        var shifts = Enumerable.Range(0, 5)
+            .Select(_ => new WorkShift(
+                new DateTime(2026, 1, 27, 9, 0, 0),
+                new DateTime(2026, 1, 27, 18, 0, 0))) // 9 hours/day
+            .ToList();
+
+        var calc = new TimesheetCalculator();
+        var result = calc.CalculateWeeklyOvertime(shifts, 40);
+
+        Assert.Equal(40, result.RegularHours);
+        Assert.Equal(5, result.OvertimeHours);
+    }
+
+    [Fact]
+    public void TimeRounding_Rounds_To_Nearest_15_Minutes()
+    {
+        var dt = new DateTime(2026, 1, 27, 9, 7, 0);
+        var rounded = TimeRounding.RoundToNearestMinutes(dt, 15);
+
+        Assert.Equal(new DateTime(2026, 1, 27, 9, 0, 0), rounded);
+    }
+
+
+
 }
