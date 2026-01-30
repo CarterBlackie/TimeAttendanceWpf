@@ -96,4 +96,40 @@ public sealed class SqliteTimePunchRepository : ITimePunchRepository
 
         return results;
     }
+
+    public IReadOnlyList<TimePunch> GetForRange(Guid employeeId, DateTime fromInclusive, DateTime toExclusive)
+    {
+        var results = new List<TimePunch>();
+
+        using var connection = new SqliteConnection(_connectionString);
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT EmployeeId, Timestamp, Type
+            FROM TimePunches
+            WHERE EmployeeId = $employeeId
+            AND Timestamp >= $from
+            AND Timestamp < $to
+            ORDER BY Timestamp ASC;
+            """;
+
+        command.Parameters.AddWithValue("$employeeId", employeeId.ToString());
+        command.Parameters.AddWithValue("$from", fromInclusive.ToString("O"));
+        command.Parameters.AddWithValue("$to", toExclusive.ToString("O"));
+
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            var empId = Guid.Parse(reader.GetString(0));
+            var timestamp = DateTime.Parse(reader.GetString(1), null, System.Globalization.DateTimeStyles.RoundtripKind);
+            var type = (PunchType)reader.GetInt32(2);
+
+            results.Add(new TimePunch(empId, timestamp, type));
+        }
+
+        return results;
+    }
+
 }
