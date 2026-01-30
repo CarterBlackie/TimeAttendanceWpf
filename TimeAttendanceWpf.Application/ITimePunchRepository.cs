@@ -5,5 +5,8 @@ namespace TimeAttendanceWpf.Application;
 public interface ITimePunchRepository
 {
     void Add(TimePunch punch);
+
     IReadOnlyList<TimePunch> GetForDay(Guid employeeId, DateTime day);
+
+    IReadOnlyList<TimePunch> GetForRange(Guid employeeId, DateTime fromInclusive, DateTime toExclusive);
 }
