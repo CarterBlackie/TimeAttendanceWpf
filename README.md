@@ -26,7 +26,7 @@ The focus of this project is business logic, architecture, and correctness rathe
 - Time rounding rules (e.g., nearest 15 minutes)
 - Manager approval workflow for timesheets
 - Persistent storage using SQLite
-
+- Unit tests covering time-tracking edge cases
 ---
 
 ## Architecture
@@ -67,8 +67,41 @@ This separation keeps the core logic testable and independent of the UI.
 ## Planned Features
 The following features are planned for future iterations:
 
-- Unit tests covering time-tracking edge cases
-- Improved UI layout and styling
+- Enhanced manager dashboard
+  - View all submitted timesheets by employee
+  - Approve or reject timesheets with required notes
+- Pay period views
+  - Bi-weekly and monthly pay period summaries
+  - Aggregated regular and overtime hours
+- Advanced overtime rules
+  - Daily overtime thresholds
+  - Double-time rules
+  - Weekend and holiday premiums
+- Break and lunch tracking
+  - Paid and unpaid breaks
+  - Automatic lunch deduction rules
+- Missed punch workflow
+  - Employee punch edit requests
+  - Manager review and approval
+- Holiday and leave support
+  - Holiday calendars
+  - Paid time off entries
+- Timesheet export
+  - CSV export per week or pay period
+- Configuration settings
+  - Overtime thresholds
+  - Rounding rules
+  - Week start day
+- Audit and history tracking
+  - Timesheet status change history
+  - Approval and rejection metadata
+- Additional test coverage
+  - Cross-midnight shift edge cases
+  - Multi-week overtime scenarios
+- UI enhancements
+  - Calendar-based week picker
+  - Status badges and visual indicators
+  - Improved accessibility and keyboard navigation
 
 The current architecture was designed to support these additions without major refactoring.
 
