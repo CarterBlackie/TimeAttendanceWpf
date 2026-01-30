@@ -13,7 +13,7 @@ public sealed class SqliteTimePunchRepository : ITimePunchRepository
         if (!string.IsNullOrWhiteSpace(directory))
             Directory.CreateDirectory(directory);
 
-        _connectionString = $"Data Source={dbFilePath}";
+        _connectionString = $"Data Source={dbFilePath};Pooling=False";
         Initialize();
     }
 
@@ -38,6 +38,7 @@ public sealed class SqliteTimePunchRepository : ITimePunchRepository
 
         command.ExecuteNonQuery();
     }
+
 
     public void Add(TimePunch punch)
     {
