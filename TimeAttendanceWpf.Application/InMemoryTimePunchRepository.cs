@@ -24,4 +24,15 @@ public sealed class InMemoryTimePunchRepository : ITimePunchRepository
             .OrderBy(p => p.Timestamp)
             .ToList();
     }
+
+    public IReadOnlyList<TimePunch> GetForRange(Guid employeeId, DateTime fromInclusive, DateTime toExclusive)
+    {
+        return _punches
+            .Where(p =>
+                p.EmployeeId == employeeId &&
+                p.Timestamp >= fromInclusive &&
+                p.Timestamp < toExclusive)
+            .OrderBy(p => p.Timestamp)
+            .ToList();
+    }
 }
